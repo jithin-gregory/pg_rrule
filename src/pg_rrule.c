@@ -96,7 +96,7 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     const char *tz_name = pg_get_timezone_name(session_timezone);
     icaltimezone* ical_tz = NULL;
     if (pg_get_timezone_offset(session_timezone, &gmtoff)) {
-        elog(NOTICE, "Time zone name: %s, Time zone offset: %ld", tz_name, gmtoff);
+        elog(WARNING, "Time zone name: %s, Time zone offset: %ld", tz_name, gmtoff);
         ical_tz = icaltimezone_get_builtin_timezone_from_offset(gmtoff, tz_name);
     }
 
@@ -108,12 +108,12 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     pg_time_t dtstart_ts_pg_time_t = timestamptz_to_time_t(dtstart_ts);
     pg_time_t until_ts_pg_time_t = timestamptz_to_time_t(until_ts);
 
-    elog(NOTICE, "dtstart timestamp: %ld, until timestamp: %ld", dtstart_ts_pg_time_t, until_ts_pg_time_t);
+    elog(WARNING, "dtstart timestamp: %ld, until timestamp: %ld", dtstart_ts_pg_time_t, until_ts_pg_time_t);
 
     struct icaltimetype dtstart = icaltime_from_timet_with_zone((time_t)dtstart_ts_pg_time_t, 0, ical_tz);
     struct icaltimetype until = icaltime_from_timet_with_zone((time_t)until_ts_pg_time_t, 0, ical_tz);
 
-    elog(NOTICE, "dtstart icaltime: %s, until icaltime: %s", icaltime_as_ical_string(dtstart), icaltime_as_ical_string(until));
+    elog(WARNING, "dtstart icaltime: %s, until icaltime: %s", icaltime_as_ical_string(dtstart), icaltime_as_ical_string(until));
 
     return pg_rrule_get_occurrences_rrule_until(*recurrence_ref, dtstart, until, true);
 }
