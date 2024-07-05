@@ -128,7 +128,7 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     elog(WARNING, "until.hour: %d", until.hour);
     elog(WARNING, "until.minute: %d", until.minute);
     elog(WARNING, "until.second: %d", until.second);
-    elog(WARNING, "until.zone: %s", until.timezone);
+    elog(WARNING, "until.zone: %s", until.zone);
     elog(WARNING, "icaltimetype dtstart: %ld", dtstart);
     elog(WARNING, "icaltimetype until: %ld", until);
     return pg_rrule_get_occurrences_rrule_until(*recurrence_ref, dtstart, until, true);
@@ -559,6 +559,7 @@ Datum pg_rrule_get_occurrences_rrule_until(struct icalrecurrencetype recurrence,
     if (use_tz) {
         for (i = 0; i < cnt; ++i) {
             datum_elems[i] = TimestampTzGetDatum(time_t_to_timestamptz(pg_times_array[i]));
+            
         }
     } else {
         for (i = 0; i < cnt; ++i) {
