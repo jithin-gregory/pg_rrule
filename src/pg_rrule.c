@@ -113,12 +113,12 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     pg_time_t until_ts_pg_time_t = timestamptz_to_time_t(until_ts);
 
     struct icaltimetype dtstart = icaltime_from_timet_with_zone((time_t)dtstart_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
-    elog(WARNING, "dt_start.day: %ld", dtstart.day);
-    elog(WARNING, "dt_start.month: %ld", dtstart.month);
-    elog(WARNING, "dt_start.year: %ld", dtstart.year);
-    elog(WARNING, "dt_start.hour: %ld", dtstart.hour);
-    elog(WARNING, "dt_start.minute: %ld", dtstart.minute);
-    elog(WARNING, "dt_start.second: %ld", dtstart.second);
+    elog(WARNING, "dt_start.day: %d", dtstart.day);
+    elog(WARNING, "dt_start.month: %d", dtstart.month);
+    elog(WARNING, "dt_start.year: %d", dtstart.year);
+    elog(WARNING, "dt_start.hour: %d", dtstart.hour);
+    elog(WARNING, "dt_start.minute: %d", dtstart.minute);
+    elog(WARNING, "dt_start.second: %d", dtstart.second);
     elog(WARNING, "dt_start.timezone: %s", dtstart.timezone);
 
     struct icaltimetype until = icaltime_from_timet_with_zone((time_t)until_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
