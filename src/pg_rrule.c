@@ -113,7 +113,22 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     pg_time_t until_ts_pg_time_t = timestamptz_to_time_t(until_ts);
 
     struct icaltimetype dtstart = icaltime_from_timet_with_zone((time_t)dtstart_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
+    elog(WARNING, "dt_start.day: %ld", dtstart.day);
+    elog(WARNING, "dt_start.month: %ld", dtstart.month);
+    elog(WARNING, "dt_start.year: %ld", dtstart.year);
+    elog(WARNING, "dt_start.hour: %ld", dtstart.hour);
+    elog(WARNING, "dt_start.minute: %ld", dtstart.minute);
+    elog(WARNING, "dt_start.second: %ld", dtstart.second);
+    elog(WARNING, "dt_start.timezone: %s", dtstart.timezone);
+
     struct icaltimetype until = icaltime_from_timet_with_zone((time_t)until_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
+    elog(WARNING, "until.day: %ld", until.day);
+    elog(WARNING, "until.month: %ld", until.month);
+    elog(WARNING, "until.year: %ld", until.year);
+    elog(WARNING, "until.hour: %ld", until.hour);
+    elog(WARNING, "until.minute: %ld", until.minute);
+    elog(WARNING, "until.second: %ld", until.second);
+    elog(WARNING, "until.timezone: %s", until.timezone);
     elog(WARNING, "icaltimetype dtstart: %ld", dtstart);
     elog(WARNING, "icaltimetype until: %ld", until);
     return pg_rrule_get_occurrences_rrule_until(*recurrence_ref, dtstart, until, true);
