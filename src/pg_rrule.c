@@ -121,7 +121,7 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     elog(WARNING, "dt_start.second: %d", dtstart.second);
     elog(WARNING, "dt_start.zone: %s", dtstart.zone);
 
-    print_timezone_info(dtstart.zone)
+    print_timezone_info(dtstart.zone);
 
     // elog(WARNING, "builtin_timezone: %p\n", s->builtin_timezone);
     // elog(WARNING, "tzid: %s\n", dtstart.zone->tzid);
