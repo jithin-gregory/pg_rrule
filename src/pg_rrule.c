@@ -121,6 +121,7 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     elog(WARNING, "dt_start.second: %d", dtstart.second);
     elog(WARNING, "dt_start.zone: %s", dtstart.zone);
 
+    print_timezone_info(dtstart.zone)
 
     // elog(WARNING, "builtin_timezone: %p\n", s->builtin_timezone);
     // elog(WARNING, "tzid: %s\n", dtstart.zone->tzid);
@@ -136,6 +137,16 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     elog(WARNING, "icaltimetype dtstart: %ld", dtstart);
     elog(WARNING, "icaltimetype until: %ld", until);
     return pg_rrule_get_occurrences_rrule_until(*recurrence_ref, dtstart, until, true);
+}
+
+void print_timezone_info(icaltimezone *timezone) {
+    const char *tzid = icaltimezone_get_tzid(timezone);
+    const char *location = icaltimezone_get_location(timezone);
+    const char *tznames = icaltimezone_get_tznames(timezone);
+
+    elog(WARNING, "Timezone ID: %s\n", tzid ? tzid : "Unknown");
+    elog(WARNING, "Location: %s\n", location ? location : "Unknown");
+    elog(WARNING, "Timezone Names: %s\n", tznames ? tznames : "Unknown");
 }
 
 // Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
