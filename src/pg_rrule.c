@@ -93,11 +93,10 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     TimestampTz until_ts = PG_GETARG_TIMESTAMPTZ(2);
 
     long int gmtoff = 0;
-    const char *tz_name = pg_get_timezone_name(session_timezone);
     icaltimezone* ical_tz = NULL;
     if (pg_get_timezone_offset(session_timezone, &gmtoff)) {
-        elog(WARNING, "Time zone name: %s, Time zone offset: %ld", tz_name, gmtoff);
-        ical_tz = icaltimezone_get_builtin_timezone_from_offset(gmtoff, tz_name);
+        elog(WARNING, "Time zone offset: %ld", gmtoff);
+        ical_tz = icaltimezone_get_builtin_timezone_from_offset(gmtoff, pg_get_timezone_name(session_timezone));
     }
 
     if (ical_tz == NULL) {
