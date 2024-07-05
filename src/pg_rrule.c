@@ -122,7 +122,7 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     elog(WARNING, "dt_start.zone: %s", dtstart.zone);
 
 
-    elog(WARNING, "builtin_timezone: %p\n", s->builtin_timezone);
+    // elog(WARNING, "builtin_timezone: %p\n", s->builtin_timezone);
     elog(WARNING, "tzid: %s\n", s->tzid);
     elog(WARNING, "tznames: %s\n", s->tznames ? s->tznames : "NULL");
     struct icaltimetype until = icaltime_from_timet_with_zone((time_t)until_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
