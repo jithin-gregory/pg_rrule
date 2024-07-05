@@ -91,6 +91,8 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     struct icalrecurrencetype* recurrence_ref = (struct icalrecurrencetype*)PG_GETARG_POINTER(0);
     TimestampTz dtstart_ts = PG_GETARG_TIMESTAMPTZ(1);
     TimestampTz until_ts = PG_GETARG_TIMESTAMPTZ(2);
+    elog(WARNING, "Parameter valid from: %ld", dtstart_ts);
+    elog(WARNING, "Parameter valid to: %ld", until_ts);
 
     long int gmtoff = 19800;
     icaltimezone* ical_tz = NULL;
