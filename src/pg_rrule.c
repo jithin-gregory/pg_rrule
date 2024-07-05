@@ -87,23 +87,52 @@ Datum pg_rrule_get_occurrences_dtstart_tz(PG_FUNCTION_ARGS) {
     return pg_rrule_get_occurrences_rrule(*recurrence_ref, dtstart, true);
 }
 
+// Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
+//     elog(WARNING, "pg_rrule_get_occurrences_dtstart_until_tz");
+//     struct icalrecurrencetype* recurrence_ref = (struct icalrecurrencetype*)PG_GETARG_POINTER(0);
+//     TimestampTz dtstart_ts = PG_GETARG_TIMESTAMPTZ(1);
+//     TimestampTz until_ts = PG_GETARG_TIMESTAMPTZ(2);
+//     const char *tz_name = pg_get_timezone_name(session_timezone);
+//     long int gmtoff = 0;
+//     icaltimezone* ical_tz = NULL;
+//     if (pg_get_timezone_offset(session_timezone, &gmtoff)) {
+//         elog(WARNING, "Time zone offset: %ld", gmtoff);
+//         elog(WARNING, "Time zone name: %s, Time zone offset: %ld", tz_name, gmtoff);
+//         elog(WARNING, "Session Time zone: %s", session_timezone);
+//         ical_tz = icaltimezone_get_builtin_timezone_from_offset(gmtoff, pg_get_timezone_name(session_timezone));
+//     }
+
+//     if (ical_tz == NULL) {
+//         elog(WARNING, "Can't get timezone from current session! Fallback to UTC.");
+//         ical_tz = icaltimezone_get_utc_timezone();
+//     }
+
+//     pg_time_t dtstart_ts_pg_time_t = timestamptz_to_time_t(dtstart_ts);
+//     pg_time_t until_ts_pg_time_t = timestamptz_to_time_t(until_ts);
+
+//     elog(WARNING, "dtstart timestamp: %ld, until timestamp: %ld", dtstart_ts_pg_time_t, until_ts_pg_time_t);
+
+//     struct icaltimetype dtstart = icaltime_from_timet_with_zone((time_t)dtstart_ts_pg_time_t, 0, ical_tz);
+//     struct icaltimetype until = icaltime_from_timet_with_zone((time_t)until_ts_pg_time_t, 0, ical_tz);
+
+//     elog(WARNING, "dtstart icaltime: %s, until icaltime: %s", icaltime_as_ical_string(dtstart), icaltime_as_ical_string(until));
+
+//     return pg_rrule_get_occurrences_rrule_until(*recurrence_ref, dtstart, until, true);
+// }
+
 Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     elog(WARNING, "pg_rrule_get_occurrences_dtstart_until_tz");
     struct icalrecurrencetype* recurrence_ref = (struct icalrecurrencetype*)PG_GETARG_POINTER(0);
     TimestampTz dtstart_ts = PG_GETARG_TIMESTAMPTZ(1);
     TimestampTz until_ts = PG_GETARG_TIMESTAMPTZ(2);
-    const char *tz_name = pg_get_timezone_name(session_timezone);
-    long int gmtoff = 0;
-    icaltimezone* ical_tz = NULL;
-    if (pg_get_timezone_offset(session_timezone, &gmtoff)) {
-        elog(WARNING, "Time zone offset: %ld", gmtoff);
-        elog(WARNING, "Time zone name: %s, Time zone offset: %ld", tz_name, gmtoff);
-        elog(WARNING, "Session Time zone: %s", session_timezone);
-        ical_tz = icaltimezone_get_builtin_timezone_from_offset(gmtoff, pg_get_timezone_name(session_timezone));
-    }
+
+    // Hardcoding the IST time zone offset and name
+    const char *tz_name = "Asia/Kolkata";
+    long int gmtoff = 19800; // 5 hours 30 minutes in seconds (5*3600 + 30*60)
+    icaltimezone* ical_tz = icaltimezone_get_builtin_timezone_from_offset(gmtoff, tz_name);
 
     if (ical_tz == NULL) {
-        elog(WARNING, "Can't get timezone from current session! Fallback to UTC.");
+        elog(WARNING, "Can't get IST timezone! Fallback to UTC.");
         ical_tz = icaltimezone_get_utc_timezone();
     }
 
@@ -119,7 +148,6 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
 
     return pg_rrule_get_occurrences_rrule_until(*recurrence_ref, dtstart, until, true);
 }
-
 
 
 
