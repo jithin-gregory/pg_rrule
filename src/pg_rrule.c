@@ -88,14 +88,17 @@ Datum pg_rrule_get_occurrences_dtstart_tz(PG_FUNCTION_ARGS) {
 }
 
 Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
+    elog(WARNING, "pg_rrule_get_occurrences_dtstart_until_tz");
     struct icalrecurrencetype* recurrence_ref = (struct icalrecurrencetype*)PG_GETARG_POINTER(0);
     TimestampTz dtstart_ts = PG_GETARG_TIMESTAMPTZ(1);
     TimestampTz until_ts = PG_GETARG_TIMESTAMPTZ(2);
-
+    const char *tz_name = pg_get_timezone_name(session_timezone);
     long int gmtoff = 0;
     icaltimezone* ical_tz = NULL;
     if (pg_get_timezone_offset(session_timezone, &gmtoff)) {
         elog(WARNING, "Time zone offset: %ld", gmtoff);
+        elog(WARNING, "Time zone name: %s, Time zone offset: %ld", tz_name, gmtoff);
+        elog(WARNING, "Session Time zone: %s", session_timezone);
         ical_tz = icaltimezone_get_builtin_timezone_from_offset(gmtoff, pg_get_timezone_name(session_timezone));
     }
 
