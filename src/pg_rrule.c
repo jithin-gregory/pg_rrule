@@ -92,7 +92,7 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     TimestampTz dtstart_ts = PG_GETARG_TIMESTAMPTZ(1);
     TimestampTz until_ts = PG_GETARG_TIMESTAMPTZ(2);
 
-    long int gmtoff = 0;
+    long int gmtoff = 19800;
     icaltimezone* ical_tz = NULL;
     if (pg_get_timezone_offset(session_timezone, &gmtoff)) {
         elog(WARNING, "Time zone offset: %ld", gmtoff);
