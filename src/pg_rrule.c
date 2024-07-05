@@ -119,7 +119,7 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     elog(WARNING, "dt_start.hour: %d", dtstart.hour);
     elog(WARNING, "dt_start.minute: %d", dtstart.minute);
     elog(WARNING, "dt_start.second: %d", dtstart.second);
-    elog(WARNING, "dt_start.timezone: %s", dtstart.timezone);
+    // elog(WARNING, "dt_start.timezone: %s", dtstart.timezone);
 
     struct icaltimetype until = icaltime_from_timet_with_zone((time_t)until_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
     elog(WARNING, "until.day: %d", until.day);
@@ -128,7 +128,7 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     elog(WARNING, "until.hour: %d", until.hour);
     elog(WARNING, "until.minute: %d", until.minute);
     elog(WARNING, "until.second: %d", until.second);
-    elog(WARNING, "until.timezone: %s", until.timezone);
+    // elog(WARNING, "until.timezone: %s", until.timezone);
     elog(WARNING, "icaltimetype dtstart: %ld", dtstart);
     elog(WARNING, "icaltimetype until: %ld", until);
     return pg_rrule_get_occurrences_rrule_until(*recurrence_ref, dtstart, until, true);
