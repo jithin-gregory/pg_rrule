@@ -104,6 +104,7 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     if (ical_tz == NULL) {
         elog(WARNING, "Can't get timezone from current session! Fallback to UTC.");
         ical_tz = icaltimezone_get_utc_timezone();
+        elog(WARNING, "icaltimezone_get_utc_timezone: %ld", ical_tz);
     }
 
     pg_time_t dtstart_ts_pg_time_t = timestamptz_to_time_t(dtstart_ts);
@@ -111,7 +112,8 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
 
     struct icaltimetype dtstart = icaltime_from_timet_with_zone((time_t)dtstart_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
     struct icaltimetype until = icaltime_from_timet_with_zone((time_t)until_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
-
+    elog(WARNING, "icaltimetype dtstart: %ld", dtstart);
+    elog(WARNING, "icaltimetype until: %ld", until);
     return pg_rrule_get_occurrences_rrule_until(*recurrence_ref, dtstart, until, true);
 }
 
