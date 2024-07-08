@@ -94,37 +94,24 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     TimestampTz until_ts = PG_GETARG_TIMESTAMPTZ(2);
     elog(WARNING, "Parameter valid from: %ld", dtstart_ts);
     elog(WARNING, "Parameter valid to: %ld", until_ts);
-    icaltimezone* ical_tz = NULL;
     long int gmtoff = 0;
-    const char *tz_name = "Asia/Kolkata";
-    pg_tz *tz = NULL;
-    int gmtoff = 0;
-
-    // Load time zone info
-    tz = pg_tzset(tz_name);
-    if (tz == NULL) {
-        elog(WARNING, "Can't get timezone from current session! Fallback to UTC.");
-        tz = pg_tzset("UTC");
-    }
+    icaltimezone* ical_tz = NULL;
     elog(WARNING, "Session timezone before pg_get_timezone_offset: %s", session_timezone);
-    if (pg_get_timezone_offset(tz, &gmtoff)) {
+    if (pg_get_timezone_offset(session_timezone, &gmtoff)) {
         elog(WARNING, "Timezone offset retrieved successfully: %ld", gmtoff);
         ical_tz = icaltimezone_get_builtin_timezone_from_offset(gmtoff, pg_get_timezone_name(session_timezone));
-    } else {
-        elog(WARNING, "Failed to get timezone offset. Falling back to UTC.");
-        ical_tz = icaltimezone_get_utc_timezone();
     }
 
     if (ical_tz == NULL) {
-        elog(WARNING, "Can't get timezone from current session! Falling back to UTC.");
+        elog(WARNING, "Can't get timezone from current session! Fallback to UTC.");
         ical_tz = icaltimezone_get_utc_timezone();
     }
 
     pg_time_t dtstart_ts_pg_time_t = timestamptz_to_time_t(dtstart_ts);
     pg_time_t until_ts_pg_time_t = timestamptz_to_time_t(until_ts);
 
-    struct icaltimetype dtstart = icaltime_from_timet_with_zone((time_t)dtstart_ts_pg_time_t, 0, ical_tz); 
-    struct icaltimetype until = icaltime_from_timet_with_zone((time_t)until_ts_pg_time_t, 0, ical_tz); 
+    struct icaltimetype dtstart = icaltime_from_timet_with_zone((time_t)dtstart_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
+    struct icaltimetype until = icaltime_from_timet_with_zone((time_t)until_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
 
     return pg_rrule_get_occurrences_rrule_until(*recurrence_ref, dtstart, until, true);
 }
