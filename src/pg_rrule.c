@@ -94,48 +94,27 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     elog(WARNING, "Parameter valid from: %ld", dtstart_ts);
     elog(WARNING, "Parameter valid to: %ld", until_ts);
 
-    long int gmtoff = 19800;
-    icaltimezone* ical_tz = NULL;
+    long int gmtoff = 0;
+    elog(INFO, "Session timezone before pg_get_timezone_offset: %s", session_timezone);
     if (pg_get_timezone_offset(session_timezone, &gmtoff)) {
-        elog(WARNING, "Time zone offset: %ld", gmtoff);
-        elog(WARNING, "Session Time zone: %s", session_timezone);
+        elog(INFO, "Timezone offset retrieved successfully: %ld", gmtoff);
         ical_tz = icaltimezone_get_builtin_timezone_from_offset(gmtoff, pg_get_timezone_name(session_timezone));
-        elog(WARNING, "Time zone ical_tz: %ld", ical_tz);
+    } else {
+        elog(WARNING, "Failed to get timezone offset. Falling back to UTC.");
+        ical_tz = icaltimezone_get_utc_timezone();
     }
 
     if (ical_tz == NULL) {
-        elog(WARNING, "Can't get timezone from current session! Fallback to UTC.");
+        elog(WARNING, "Can't get timezone from current session! Falling back to UTC.");
         ical_tz = icaltimezone_get_utc_timezone();
-        elog(WARNING, "icaltimezone_get_utc_timezone: %ld", ical_tz);
     }
 
     pg_time_t dtstart_ts_pg_time_t = timestamptz_to_time_t(dtstart_ts);
     pg_time_t until_ts_pg_time_t = timestamptz_to_time_t(until_ts);
 
-    struct icaltimetype dtstart = icaltime_from_timet_with_zone((time_t)dtstart_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
-    elog(WARNING, "dt_start.day: %d", dtstart.day);
-    elog(WARNING, "dt_start.month: %d", dtstart.month);
-    elog(WARNING, "dt_start.year: %d", dtstart.year);
-    elog(WARNING, "dt_start.hour: %d", dtstart.hour);
-    elog(WARNING, "dt_start.minute: %d", dtstart.minute);
-    elog(WARNING, "dt_start.second: %d", dtstart.second);
-    elog(WARNING, "dt_start.zone: %s", dtstart.zone);
+    struct icaltimetype dtstart = icaltime_from_timet_with_zone((time_t)dtstart_ts_pg_time_t, 0, ical_tz); 
+    struct icaltimetype until = icaltime_from_timet_with_zone((time_t)until_ts_pg_time_t, 0, ical_tz); 
 
-    print_timezone_info(dtstart.zone);
-
-    // elog(WARNING, "builtin_timezone: %p\n", s->builtin_timezone);
-    // elog(WARNING, "tzid: %s\n", dtstart.zone->tzid);
-    // elog(WARNING, "tznames: %s\n", dtstart.zone->tznames);
-    struct icaltimetype until = icaltime_from_timet_with_zone((time_t)until_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
-    elog(WARNING, "until.day: %d", until.day);
-    elog(WARNING, "until.month: %d", until.month);
-    elog(WARNING, "until.year: %d", until.year);
-    elog(WARNING, "until.hour: %d", until.hour);
-    elog(WARNING, "until.minute: %d", until.minute);
-    elog(WARNING, "until.second: %d", until.second);
-    elog(WARNING, "until.zone: %s", until.zone);
-    elog(WARNING, "icaltimetype dtstart: %ld", dtstart);
-    elog(WARNING, "icaltimetype until: %ld", until);
     return pg_rrule_get_occurrences_rrule_until(*recurrence_ref, dtstart, until, true);
 }
 
