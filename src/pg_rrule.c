@@ -6,6 +6,7 @@
 #include <utils/lsyscache.h> // get_typlenbyvalalign
 #include "utils/builtins.h" // cstring_to_text
 
+
 const char* icalrecur_freq_to_string(icalrecurrencetype_frequency kind); // no public definition in ical.h
 const char* icalrecur_weekday_to_string(icalrecurrencetype_weekday kind);  // no public definition in ical.h
 
@@ -95,8 +96,18 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     elog(WARNING, "Parameter valid to: %ld", until_ts);
     icaltimezone* ical_tz = NULL;
     long int gmtoff = 0;
+    const char *tz_name = "Asia/Kolkata";
+    pg_tz *tz = NULL;
+    int gmtoff = 0;
+
+    // Load time zone info
+    tz = pg_tzset(tz_name);
+    if (tz == NULL) {
+        elog(WARNING, "Can't get timezone from current session! Fallback to UTC.");
+        tz = pg_tzset("UTC");
+    }
     elog(WARNING, "Session timezone before pg_get_timezone_offset: %s", session_timezone);
-    if (pg_get_timezone_offset(session_timezone, &gmtoff)) {
+    if (pg_get_timezone_offset(tz, &gmtoff)) {
         elog(WARNING, "Timezone offset retrieved successfully: %ld", gmtoff);
         ical_tz = icaltimezone_get_builtin_timezone_from_offset(gmtoff, pg_get_timezone_name(session_timezone));
     } else {
