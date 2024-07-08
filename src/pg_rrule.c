@@ -95,9 +95,9 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
     elog(WARNING, "Parameter valid to: %ld", until_ts);
     icaltimezone* ical_tz = NULL;
     long int gmtoff = 0;
-    elog(INFO, "Session timezone before pg_get_timezone_offset: %s", session_timezone);
+    elog(WARNING, "Session timezone before pg_get_timezone_offset: %s", session_timezone);
     if (pg_get_timezone_offset(session_timezone, &gmtoff)) {
-        elog(INFO, "Timezone offset retrieved successfully: %ld", gmtoff);
+        elog(WARNING, "Timezone offset retrieved successfully: %ld", gmtoff);
         ical_tz = icaltimezone_get_builtin_timezone_from_offset(gmtoff, pg_get_timezone_name(session_timezone));
     } else {
         elog(WARNING, "Failed to get timezone offset. Falling back to UTC.");
