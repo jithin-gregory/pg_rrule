@@ -109,10 +109,11 @@ Datum pg_rrule_get_occurrences_dtstart_until_tz(PG_FUNCTION_ARGS) {
 
     pg_time_t dtstart_ts_pg_time_t = timestamptz_to_time_t(dtstart_ts);
     pg_time_t until_ts_pg_time_t = timestamptz_to_time_t(until_ts);
+    elog(WARNING, "dtstart timestamp: %ld, until timestamp: %ld", dtstart_ts_pg_time_t, until_ts_pg_time_t);
 
     struct icaltimetype dtstart = icaltime_from_timet_with_zone((time_t)dtstart_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
     struct icaltimetype until = icaltime_from_timet_with_zone((time_t)until_ts_pg_time_t, 0, ical_tz); // it's safe ? time_t may be double, float, etc...
-
+    elog(WARNING, "dtstart icaltime: %s, until icaltime: %s", icaltime_as_ical_string(dtstart), icaltime_as_ical_string(until));
     return pg_rrule_get_occurrences_rrule_until(*recurrence_ref, dtstart, until, true);
 }
 
