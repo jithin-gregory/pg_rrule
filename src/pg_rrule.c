@@ -621,7 +621,10 @@ void pg_rrule_rrule_to_time_t_array_until(struct icalrecurrencetype recurrence,
 
     for (i = 0; i < cnt; ++i) {
         ical_time = (*(icaltimetype*)icalarray_element_at(icaltimes_list, i));
+         elog(WARNING, "Converted Ical values: %s", icaltime_as_ical_string(ical_time));
         times_array[i] = icaltime_as_timet_with_zone(ical_time, dtstart.zone);
+        elog(WARNING, "time_t values: %ld",times_array[i]);
+
     }
 
     icalarray_free(icaltimes_list);
