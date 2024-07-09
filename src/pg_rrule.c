@@ -550,8 +550,10 @@ Datum pg_rrule_get_occurrences_rrule_until(struct icalrecurrencetype recurrence,
 
     if (use_tz) {
         for (i = 0; i < cnt; ++i) {
+            elog(WARNING, "pg_time_t values: %ld",pg_times_array[i]);
             datum_elems[i] = TimestampTzGetDatum(time_t_to_timestamptz(pg_times_array[i]));
-            
+            char *timestamp_str = timestamptz_to_str(datum_elems[i]);
+            elog(WARNING, "converted dates: %s", timestamp_str);
         }
     } else {
         for (i = 0; i < cnt; ++i) {
