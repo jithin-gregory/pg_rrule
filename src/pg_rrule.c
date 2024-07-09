@@ -537,10 +537,11 @@ Datum pg_rrule_get_occurrences_rrule_until(struct icalrecurrencetype recurrence,
 
     pg_rrule_rrule_to_time_t_array_until(recurrence, dtstart, until, &times_array, &cnt);
     pg_time_t* pg_times_array = palloc(sizeof(pg_time_t) * cnt);
-
+    
     unsigned int i;
 
     for (i = 0; i < cnt; ++i) {
+        elog(WARNING, "time_t values: %ld",times_array[i]);
         pg_times_array[i] = (pg_time_t)times_array[i]; // it's safe ? time_t may be double, float, etc...
     }
 
